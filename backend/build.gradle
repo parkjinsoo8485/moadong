@@ -76,6 +76,9 @@ dependencies {
 
 	implementation 'net.javacrumbs.shedlock:shedlock-spring:7.6.0'
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-mongo:7.6.0'
+
+	// Embedded MongoDB for local run without Docker
+	runtimeOnly 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0'
 }
 
 apply from: 'gradle/infisical.gradle'

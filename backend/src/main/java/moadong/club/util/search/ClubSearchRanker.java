@@ -14,11 +14,11 @@ public class ClubSearchRanker {
                 .sorted(
                         Comparator
                                 .comparingInt((ClubSearchCandidate candidate) -> candidate.matchType().getPriority())
-                                .thenComparingInt(ClubSearchCandidate::detailScore)
+                                .thenComparingInt(c -> c.detailScore())
                                 .thenComparingInt(candidate -> ClubRecruitmentStatus.getPriorityFromString(candidate.club().recruitmentStatus()))
-                                .thenComparing(candidate -> candidate.club().name(), Comparator.nullsLast(String::compareTo))
+                                .thenComparing(candidate -> candidate.club().name(), Comparator.nullsLast((s1, s2) -> s1.compareTo(s2)))
                 )
-                .map(ClubSearchCandidate::club)
+                .map(c -> c.club())
                 .toList();
     }
 }

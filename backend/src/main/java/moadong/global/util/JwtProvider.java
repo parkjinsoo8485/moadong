@@ -3,7 +3,6 @@ package moadong.global.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import moadong.global.config.properties.JwtProperties;
@@ -26,7 +25,7 @@ public class JwtProvider {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + (long) jwtProperties.accessToken().expiration().min() * 1000 * 60))
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.secretKey())
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -34,7 +33,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.secretKey())
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -44,7 +43,7 @@ public class JwtProvider {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expiresAt)
-                .signWith(SignatureAlgorithm.HS256, jwtProperties.secretKey())
+                .signWith(getSigningKey())
                 .compact();
         return new RefreshToken(refreshToken,expiresAt);
     }
@@ -67,8 +66,9 @@ public class JwtProvider {
     // Claims 추출
     private Claims getClaims(String token) {
         try {
-            return Jwts.parser()
-                    .setSigningKey(jwtProperties.secretKey())
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (JwtException e){

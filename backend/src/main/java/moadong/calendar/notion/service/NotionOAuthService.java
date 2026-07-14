@@ -1,7 +1,7 @@
 package moadong.calendar.notion.service;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
@@ -330,7 +330,8 @@ public class NotionOAuthService {
 
             List<ClubCalendarEventResult> mappedEvents = allResults.stream()
                     .map(this::mapToClubCalendarEvent)
-                    .flatMap(Optional::stream)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
                     .toList();
 
             log.debug("클럽 상세 캘린더 이벤트 조회 완료. clubId={}, databaseId={}, notionResults={}, mappedEvents={}",
@@ -524,7 +525,7 @@ public class NotionOAuthService {
 
     private Optional<NotionConnection> findLegacyNotionConnectionAndMigrate(String clubId) {
         return clubRepository.findById(clubId)
-                .map(Club::getUserId)
+                .map(c -> c.getUserId())
                 .filter(StringUtils::hasText)
                 .flatMap(notionConnectionRepository::findById)
                 .map(legacy -> {

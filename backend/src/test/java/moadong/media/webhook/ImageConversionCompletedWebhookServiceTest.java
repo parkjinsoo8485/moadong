@@ -54,7 +54,7 @@ class ImageConversionCompletedWebhookServiceTest {
         String source = "clubId/logo/photo.jpg";
         String destination = "clubId/logo/photo.webp";
         String fullUrlOld = VIEW_ENDPOINT + "/" + source;
-        String fullUrlNew = VIEW_ENDPOINT + "/" + destination;
+
 
         ClubRecruitmentInformation info = ClubRecruitmentInformation.builder()
                 .logo(fullUrlOld)

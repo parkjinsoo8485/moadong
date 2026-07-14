@@ -79,11 +79,11 @@ public class ClubClickService {
 
     public void refreshWhitelist() {
         List<String> names = clubRepository.findAll().stream()
-                .map(Club::getName)
+                .map(c -> c.getName())
                 .toList();
         stringRedisTemplate.execute(WHITELIST_SWAP_SCRIPT,
                 List.of(WHITELIST_KEY),
-                names.toArray(String[]::new));
+                (Object[]) names.toArray(String[]::new));
         log.info("동아리 화이트리스트 갱신 완료 ({}개)", names.size());
     }
 

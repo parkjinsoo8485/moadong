@@ -169,6 +169,7 @@ public class ClubApplyAdminService {
                 case SUBMITTED -> reviewRequired++;
                 case INTERVIEW_SCHEDULED -> scheduledInterview++;
                 case ACCEPTED -> accepted++;
+                case DECLINED -> { /* 거절된 지원자는 카운트하지 않음 */ }
             }
         }
 
@@ -176,7 +177,7 @@ public class ClubApplyAdminService {
     }
 
     private ClubApplicant sortApplicationAnswers(ClubApplicationForm application, ClubApplicant app) {
-        Map<Long, ClubQuestionAnswer> answerMap = app.getAnswers().stream().collect(Collectors.toMap(ClubQuestionAnswer::getId, answer -> answer));
+        Map<Long, ClubQuestionAnswer> answerMap = app.getAnswers().stream().collect(Collectors.toMap(ans -> ans.getId(), answer -> answer));
 
         List<ClubQuestionAnswer> sortedAnswers = application.getQuestions().stream().map(question -> answerMap.get(question.getId())).filter(Objects::nonNull).collect(Collectors.toList());
 
@@ -188,7 +189,7 @@ public class ClubApplyAdminService {
     public void editApplicantDetail(String applicationFormId, List<ClubApplicantEditRequest> request, CustomUserDetails user) {
         String clubId = user.getClubId();
 
-        Map<String, ClubApplicantEditRequest> requestMap = request.stream().collect(Collectors.toMap(ClubApplicantEditRequest::applicantId, Function.identity(), (prev, next) -> next));
+        Map<String, ClubApplicantEditRequest> requestMap = request.stream().collect(Collectors.toMap(req -> req.applicantId(), Function.identity(), (prev, next) -> next));
 
         List<String> applicationIds = new ArrayList<>(requestMap.keySet());
         List<ClubApplicant> application = clubApplicantsRepository.findAllByIdInAndFormId(applicationIds, applicationFormId);

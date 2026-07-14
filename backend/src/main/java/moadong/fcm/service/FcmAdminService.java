@@ -21,11 +21,10 @@ import moadong.global.exception.RestApiException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
+
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,8 +39,8 @@ public class FcmAdminService {
 
     public TokenListResponse getAllAvailableToken() {
         List<String> tokens = Stream.concat(
-                        studentFcmTokenRepository.findAll().stream().map(StudentFcmToken::getToken),
-                        fcmTokenRepository.findAll().stream().map(FcmToken::getToken)
+                        studentFcmTokenRepository.findAll().stream().map(t -> t.getToken()),
+                        fcmTokenRepository.findAll().stream().map(t -> t.getToken())
                 )
                 .filter(StringUtils::hasText)
                 .collect(Collectors.collectingAndThen(

@@ -6,7 +6,7 @@ import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import moadong.fcm.model.MulticastPushPayload;
 import moadong.fcm.model.MulticastPushResult;
@@ -14,6 +14,7 @@ import moadong.fcm.model.PushPayload;
 import moadong.fcm.model.TokenPushPayload;
 import moadong.fcm.model.TokenPushResult;
 import moadong.fcm.port.PushNotificationPort;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -28,15 +29,22 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class FirebasePushNotificationAdapter implements PushNotificationPort {
 
     private static final int MULTICAST_LIMIT = 500;
 
     private final FirebaseMessaging firebaseMessaging;
 
+    public FirebasePushNotificationAdapter(@Autowired(required = false) FirebaseMessaging firebaseMessaging) {
+        this.firebaseMessaging = firebaseMessaging;
+    }
+
     @Override
     public TokenPushResult send(PushPayload payload) {
+        if (firebaseMessaging == null) {
+            log.warn("FCM feature disabled. Skipping send.");
+            return new TokenPushResult(false, null);
+        }
         log.info("PushPayload: {}", payload);
         Message.Builder builder = Message.builder()
                 .setNotification(Notification.builder()
@@ -62,6 +70,10 @@ public class FirebasePushNotificationAdapter implements PushNotificationPort {
 
     @Override
     public TokenPushResult sendToToken(TokenPushPayload payload) {
+        if (firebaseMessaging == null) {
+            log.warn("FCM feature disabled. Skipping sendToToken.");
+            return new TokenPushResult(false, null);
+        }
         if (!StringUtils.hasText(payload.token())) {
             log.warn("FCM send skipped - blank token");
             return new TokenPushResult(false, null);
@@ -90,6 +102,10 @@ public class FirebasePushNotificationAdapter implements PushNotificationPort {
 
     @Override
     public MulticastPushResult sendToTokens(MulticastPushPayload payload) {
+        if (firebaseMessaging == null) {
+            log.warn("FCM feature disabled. Skipping sendToTokens.");
+            return new MulticastPushResult(0, 0, 0, List.of());
+        }
         List<String> tokens = payload.tokens() == null ? List.of() : payload.tokens().stream()
                 .filter(StringUtils::hasText)
                 .collect(Collectors.collectingAndThen(
@@ -158,8 +174,8 @@ public class FirebasePushNotificationAdapter implements PushNotificationPort {
         return data.entrySet().stream()
                 .filter(entry -> StringUtils.hasText(entry.getKey()) && entry.getValue() != null)
                 .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue(),
                         (left, right) -> right,
                         LinkedHashMap::new
                 ));

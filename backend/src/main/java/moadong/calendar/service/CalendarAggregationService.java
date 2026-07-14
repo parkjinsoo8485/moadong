@@ -40,8 +40,8 @@ public class CalendarAggregationService {
 
         return allEvents.stream()
                 .sorted(Comparator.comparing(
-                        ClubCalendarEventResult::start,
-                        Comparator.nullsLast(String::compareTo)
+                        event -> event.start(),
+                        Comparator.nullsLast((s1, s2) -> s1.compareTo(s2))
                 ))
                 .toList();
     }

@@ -4,12 +4,13 @@ import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.TopicManagementResponse;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import moadong.fcm.util.FcmTopicResolver;
 import moadong.global.config.properties.FcmProperties;
 import moadong.global.exception.ErrorCode;
 import moadong.global.exception.RestApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,6 @@ import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FcmAsyncService {
 
     private final FcmTxService fcmTxService;
@@ -35,6 +35,13 @@ public class FcmAsyncService {
 
     private final FcmProperties fcmProperties;
 
+    public FcmAsyncService(FcmTxService fcmTxService, @Autowired(required = false) FirebaseMessaging firebaseMessaging, FcmTopicResolver fcmTopicResolver, FcmProperties fcmProperties) {
+        this.fcmTxService = fcmTxService;
+        this.firebaseMessaging = firebaseMessaging;
+        this.fcmTopicResolver = fcmTopicResolver;
+        this.fcmProperties = fcmProperties;
+    }
+
     /**
      * @deprecated
      * @param token
@@ -43,6 +50,7 @@ public class FcmAsyncService {
      * @param clubsToUnsubscribe
      * @return
      */
+    @Deprecated
     @Async("fcmAsync")
     public CompletableFuture<Void> updateSubscriptions(String token, Set<String> newClubIds, Set<String> clubsToSubscribe, Set<String> clubsToUnsubscribe) {
         return updateSubscriptionsInternal(

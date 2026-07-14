@@ -44,7 +44,8 @@ public class ClubSearchService {
         List<String> expandedKeywords = wordDictionaryService.expandKeywords(keyword);
         List<ClubSearchCandidate> matchedCandidates = candidates.stream()
                 .map(candidate -> clubSearchMatcher.match(candidate, keyword, expandedKeywords))
-                .flatMap(Optional::stream)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
 
         List<ClubSearchResult> sortedResult = clubSearchRanker.sort(matchedCandidates);
@@ -73,7 +74,7 @@ public class ClubSearchService {
                                         randomCategoryPriorities.getOrDefault(
                                                 club.category() != null ? club.category().toUpperCase() : null,
                                                 Integer.MAX_VALUE))
-                                .thenComparing(ClubSearchResult::name, Comparator.nullsLast(String::compareTo))
+                                .thenComparing(club -> club.name(), Comparator.nullsLast((s1, s2) -> s1.compareTo(s2)))
                 )
                 .map(r -> new ClubSearchResult(
                         r.id(),

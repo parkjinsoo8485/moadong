@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import moadong.club.entity.ClubApplicationForm;
-import moadong.club.enums.ApplicationFormStatus;
+
 import moadong.club.payload.dto.ClubActiveFormSlim;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

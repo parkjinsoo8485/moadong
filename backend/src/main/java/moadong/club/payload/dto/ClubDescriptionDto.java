@@ -41,10 +41,10 @@ public record ClubDescriptionDto(
         return ClubDescription.builder()
                 .introDescription(introDescription)
                 .activityDescription(activityDescription)
-                .awards(awards == null ? null : awards.stream().map(ClubAwardDto::toEntity).toList())
+                .awards(awards == null ? null : awards.stream().map(dto -> dto.toEntity()).toList())
                 .idealCandidate(idealCandidate == null ? null : idealCandidate.toEntity())
                 .benefits(benefits)
-                .faqs(faqs == null ? null : faqs.stream().map(FaqDto::toEntity).toList())
+                .faqs(faqs == null ? null : faqs.stream().map(dto -> dto.toEntity()).toList())
                 .build();
     }
 }

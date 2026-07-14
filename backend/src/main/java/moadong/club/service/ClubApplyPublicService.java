@@ -98,9 +98,9 @@ public class ClubApplyPublicService {
 
     private void validateAnswers(List<ClubApplyRequest.Answer> answers, ClubApplicationForm clubApplicationForm) {
         // 미리 질문과 응답 id 만들어두기
-        Map<Long, ClubApplicationFormQuestion> questionMap = clubApplicationForm.getQuestions().stream().collect(Collectors.toMap(ClubApplicationFormQuestion::getId, Function.identity()));
+        Map<Long, ClubApplicationFormQuestion> questionMap = clubApplicationForm.getQuestions().stream().collect(Collectors.toMap(q -> q.getId(), Function.identity()));
 
-        Set<Long> answerIds = answers.stream().map(ClubApplyRequest.Answer::id).collect(Collectors.toSet());
+        Set<Long> answerIds = answers.stream().map(ans -> ans.id()).collect(Collectors.toSet());
 
         // 필수 질문이 누락되었는지 검증
         for (ClubApplicationFormQuestion question : clubApplicationForm.getQuestions()) {
@@ -133,6 +133,9 @@ public class ClubApplyPublicService {
                 if (value.length() > 1000) {
                     throw new RestApiException(ErrorCode.LONG_EXCEED_LENGTH);
                 }
+            }
+            case MULTI_CHOICE, CHOICE, EMAIL, NAME, PHONE_NUMBER -> {
+                /* 길이 제한 검증 불필요 */
             }
         }
     }

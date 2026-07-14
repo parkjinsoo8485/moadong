@@ -37,7 +37,7 @@ public class BannerImagesService {
 
     public BannerImagesResponse getBannerImages(PlatformType platformType) {
         List<BannerItemResponse> images = bannerImagesRepository.findById(BANNER_IMAGES_ID + "_" + platformType.name())
-            .map(BannerImages::getImages)
+            .map(b -> b.getImages())
             .orElseGet(List::of)
             .stream()
             .map(this::toResponse)

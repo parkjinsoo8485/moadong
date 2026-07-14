@@ -3,11 +3,12 @@ package moadong.fcm.service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.TopicManagementResponse;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import moadong.fcm.util.FcmTopicResolver;
 import moadong.global.exception.ErrorCode;
 import moadong.global.exception.RestApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,11 +16,15 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class StudentFcmSubscriptionService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final FcmTopicResolver fcmTopicResolver;
+
+    public StudentFcmSubscriptionService(@Autowired(required = false) FirebaseMessaging firebaseMessaging, FcmTopicResolver fcmTopicResolver) {
+        this.firebaseMessaging = firebaseMessaging;
+        this.fcmTopicResolver = fcmTopicResolver;
+    }
 
     public void transferSubscriptions(String studentId, String oldFcmToken, String newFcmToken, List<String> finalClubIds) {
         for (String clubId : finalClubIds) {
@@ -32,6 +37,10 @@ public class StudentFcmSubscriptionService {
     }
 
     private void subscribeToClub(String studentId, String token, String clubId) {
+        if (firebaseMessaging == null) {
+            log.warn("FCM feature disabled. Skipping subscription.");
+            return;
+        }
         String topic = fcmTopicResolver.resolveTopic(clubId);
         try {
             TopicManagementResponse response = firebaseMessaging.subscribeToTopic(Collections.singletonList(token), topic);
@@ -48,6 +57,10 @@ public class StudentFcmSubscriptionService {
     }
 
     private void unsubscribeFromClub(String studentId, String token, String clubId) {
+        if (firebaseMessaging == null) {
+            log.warn("FCM feature disabled. Skipping unsubscription.");
+            return;
+        }
         String topic = fcmTopicResolver.resolveTopic(clubId);
         try {
             TopicManagementResponse response = firebaseMessaging.unsubscribeFromTopic(Collections.singletonList(token), topic);

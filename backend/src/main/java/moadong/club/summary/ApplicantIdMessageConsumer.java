@@ -30,7 +30,7 @@ public class ApplicantIdMessageConsumer {
     private final ClubApplicationFormsRepository clubApplicationFormsRepository;
     private final AESCipher cipher;
     private final GemmaService gemmaService;
-    private final ApplicantIdMessagePublisher publisher;
+
 
     @RabbitListener(queues = "${rabbitmq.summary.queue}", concurrency = "1")
     public void receiveMessage(ApplicantSummaryMessage message) {

@@ -153,6 +153,7 @@ class FcmServiceTest {
                 .build());
 
         // when
+        @SuppressWarnings("deprecation")
         CompletableFuture<Void> future = fcmAsyncService.updateSubscriptions(token, Set.copyOf(newClubIds), Set.of(club3.getId()), Set.of(club1.getId()));
         future.join();
 

@@ -1,14 +1,13 @@
 package moadong.global.config;
 
-import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
+
 import org.javers.repository.mongo.MongoRepository;
 import org.javers.spring.auditable.AuthorProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.PlatformTransactionManager;
+
 
 @Configuration
 public class JaversConfig {

@@ -40,9 +40,7 @@ public class ClubHistoryResponse {
         Club club = shadow.get();
         var metadata = shadow.getCommitMetadata();
 
-        // 중첩 객체 Null 방어 로직
         var recruitmentInfo = club.getClubRecruitmentInformation();
-        boolean hasInfo = recruitmentInfo != null;
 
         return ClubHistoryResponse.builder()
                 .version(metadata.getId().getMajorId())
@@ -56,21 +54,21 @@ public class ClubHistoryResponse {
                 .state(club.getState() != null ? club.getState().name() : null)
 
                 // RecruitmentInfo 필드 매핑 (Null Safe)
-                .introduction(hasInfo ? recruitmentInfo.getIntroduction() : null)
-                .presidentName(hasInfo ? recruitmentInfo.getPresidentName() : null)
-                .recruitmentTarget(hasInfo ? recruitmentInfo.getRecruitmentTarget() : null)
-                .recruitmentStatus(hasInfo ? recruitmentInfo.getClubRecruitmentStatus() : null)
+                .introduction(recruitmentInfo != null ? recruitmentInfo.getIntroduction() : null)
+                .presidentName(recruitmentInfo != null ? recruitmentInfo.getPresidentName() : null)
+                .recruitmentTarget(recruitmentInfo != null ? recruitmentInfo.getRecruitmentTarget() : null)
+                .recruitmentStatus(recruitmentInfo != null ? recruitmentInfo.getClubRecruitmentStatus() : null)
 
                 // 시간 타입 변환 (Instant -> LocalDateTime 등 필요시)
-                .recruitmentStart(hasInfo && recruitmentInfo.getRecruitmentStart() != null
+                .recruitmentStart(recruitmentInfo != null && recruitmentInfo.getRecruitmentStart() != null
                         ? recruitmentInfo.getRecruitmentStart().toLocalDateTime()
                         : null)
-                .recruitmentEnd(hasInfo && recruitmentInfo.getRecruitmentEnd() != null
+                .recruitmentEnd(recruitmentInfo != null && recruitmentInfo.getRecruitmentEnd() != null
                         ? recruitmentInfo.getRecruitmentEnd().toLocalDateTime()
                         : null)
 
                 // 리스트 필드 Null 방어
-                .tags(hasInfo && recruitmentInfo.getTags() != null
+                .tags(recruitmentInfo != null && recruitmentInfo.getTags() != null
                         ? recruitmentInfo.getTags()
                         : Collections.emptyList())
 

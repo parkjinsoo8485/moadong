@@ -8,9 +8,7 @@ import static org.mockito.BDDMockito.mock;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.BDDMockito.when;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
+
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -42,7 +40,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @UnitTest
 public class UserLoginTest {
-    private static Validator validator;
     @Spy
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Mock
@@ -58,12 +55,6 @@ public class UserLoginTest {
     @InjectMocks
     private UserCommandService userCommandService;
     private MockHttpServletResponse realHttpServletResponse = new MockHttpServletResponse();
-
-    @BeforeAll
-    public static void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
 
     @Test
     void 정상적으로_로그인_시도를_할_경우_작동한다(){
