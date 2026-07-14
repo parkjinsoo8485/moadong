@@ -9,6 +9,8 @@ const LOCALHOST_HOSTNAME = 'localhost';
 export function initializeMixpanel() {
   if (!import.meta.env.VITE_MIXPANEL_TOKEN) {
     console.warn('믹스패널 환경변수 설정이 안 되어 있습니다.');
+    mixpanel.init('dummy', { test: true });
+    mixpanel.disable();
     return;
   }
 
