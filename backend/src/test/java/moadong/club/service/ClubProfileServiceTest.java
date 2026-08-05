@@ -49,15 +49,12 @@ public class ClubProfileServiceTest {
         User user = userRepository.findUserByUserId(UserFixture.collectUserId).get();
         this.userDetails = new CustomUserDetails(user);
 
-        // Club이 없으면 생성
-        if (clubRepository.findClubByUserId(user.getId()).isEmpty()) {
-            Club club = new Club(user.getId());
-            clubRepository.save(club);
-            this.clubId = club.getId();
-        } else {
-            Club club = clubRepository.findClubByUserId(user.getId()).get();
-            this.clubId = club.getId();
-        }
+        // 낙관적 락 테스트의 반복 실행을 위해 항상 기존 Club 삭제 후 새로 생성
+        clubRepository.findClubByUserId(user.getId())
+                .ifPresent(c -> clubRepository.delete(c));
+        Club club = new Club(user.getId());
+        clubRepository.save(club);
+        this.clubId = club.getId();
     }
 
     @AfterEach
@@ -102,6 +99,8 @@ public class ClubProfileServiceTest {
                 } catch (RestApiException e) {
                     if (e.getErrorCode() == ErrorCode.CLUB_NOT_FOUND) {
                         notFoundCount.incrementAndGet();
+                    } else if (e.getErrorCode() == ErrorCode.CLUB_NAME_ALREADY_EXISTS) {
+                        conflictCount.incrementAndGet();
                     } else {
                         e.printStackTrace();
                     }

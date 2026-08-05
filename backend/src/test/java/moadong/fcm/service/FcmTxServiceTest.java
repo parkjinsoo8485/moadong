@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @IntegrationTest
-@Transactional
 class FcmTxServiceTest {
 
     @Autowired
@@ -25,6 +24,7 @@ class FcmTxServiceTest {
 
     @BeforeEach
     void setUp() {
+        fcmTokenRepository.deleteFcmTokenByToken("token1");
         token = FcmToken.builder()
                 .token("token1")
                 .build();
