@@ -82,9 +82,15 @@ public class RabbitMQConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cf = new CachingConnectionFactory(springRabbitProperties.getHost(), springRabbitProperties.getPort());
-        cf.setUsername(springRabbitProperties.getUsername());
-        cf.setPassword(springRabbitProperties.getPassword());
+        String host = springRabbitProperties.getHost() != null ? springRabbitProperties.getHost() : "localhost";
+        int port = springRabbitProperties.getPort() != null ? springRabbitProperties.getPort() : 5672;
+        CachingConnectionFactory cf = new CachingConnectionFactory(host, port);
+        if (springRabbitProperties.getUsername() != null) {
+            cf.setUsername(springRabbitProperties.getUsername());
+        }
+        if (springRabbitProperties.getPassword() != null) {
+            cf.setPassword(springRabbitProperties.getPassword());
+        }
         return cf;
     }
 }

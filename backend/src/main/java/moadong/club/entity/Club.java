@@ -52,7 +52,7 @@ public class Club implements Persistable<String> {
     @Version
     private Long version;
     public Club() {
-        this.name = "";
+        this.name = null;
         this.category = "";
         this.division = "";
         this.state = ClubState.UNAVAILABLE;
@@ -61,7 +61,7 @@ public class Club implements Persistable<String> {
     }
 
     public Club(String userId) {
-        this.name = "";
+        this.name = null;
         this.category = "";
         this.division = "";
         this.state = ClubState.UNAVAILABLE;
@@ -72,7 +72,7 @@ public class Club implements Persistable<String> {
 
     public Club(String id, String userId) {
         this.id = id;
-        this.name = "";
+        this.name = null;
         this.category = "";
         this.division = "";
         this.state = ClubState.UNAVAILABLE;

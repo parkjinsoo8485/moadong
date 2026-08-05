@@ -52,11 +52,12 @@ public class S3Config {
     }
     
     private void validateCredentials() {
-        if (awsProperties.credentials().accessKey() == null || awsProperties.credentials().accessKey().isEmpty() || 
+        if (awsProperties.credentials() == null || 
+            awsProperties.credentials().accessKey() == null || awsProperties.credentials().accessKey().isEmpty() || 
             awsProperties.credentials().secretKey() == null || awsProperties.credentials().secretKey().isEmpty()) {
             throw new IllegalStateException("AWS credentials (accessKey, secretKey) must be configured");
         }
-        if (awsProperties.s3().endpoint() == null || awsProperties.s3().endpoint().isEmpty()) {
+        if (awsProperties.s3() == null || awsProperties.s3().endpoint() == null || awsProperties.s3().endpoint().isEmpty()) {
             throw new IllegalStateException("AWS S3 endpoint must be configured");
         }
     }

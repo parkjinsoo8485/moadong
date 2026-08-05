@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.MongoTransactionManager;
 @EnableSchedulerLock(defaultLockAtMostFor = "2m", defaultLockAtLeastFor = "30s")
 public class MongoConfig {
     @Bean
+    @org.springframework.context.annotation.Profile("prod")
     public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }

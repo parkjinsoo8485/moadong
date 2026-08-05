@@ -36,6 +36,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserCommandService {
@@ -59,7 +62,7 @@ public class UserCommandService {
             createClub(clubId, userId);
 
             return user;
-        } catch (MongoWriteException e) {
+        } catch (MongoWriteException | org.springframework.dao.OptimisticLockingFailureException | org.springframework.data.mongodb.UncategorizedMongoDbException e) {
             throw new RestApiException(ErrorCode.USER_ALREADY_EXIST);
         }
     }
@@ -82,7 +85,8 @@ public class UserCommandService {
             User user = userRepository.save(createUserWithRole(baseRequest, userId, clubId, UserRole.DEVELOPER));
             createClub(clubId, userId);
             return user;
-        } catch (MongoWriteException e) {
+        } catch (MongoWriteException | org.springframework.dao.OptimisticLockingFailureException | org.springframework.data.mongodb.UncategorizedMongoDbException e) {
+            log.error("Error in registerDeveloper: ", e);
             throw new RestApiException(ErrorCode.USER_ALREADY_EXIST);
         }
     }
