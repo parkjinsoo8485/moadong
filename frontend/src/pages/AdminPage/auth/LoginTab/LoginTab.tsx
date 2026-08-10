@@ -5,11 +5,13 @@ import moadong_name_logo from '@/assets/images/logos/moadong_name_logo.svg';
 import Button from '@/components/common/Button/Button';
 import Header from '@/components/common/Header/Header';
 import InputField from '@/components/common/InputField/InputField';
+import Spinner from '@/components/common/Spinner/Spinner';
 import { ADMIN_EVENT, PAGE_VIEW } from '@/constants/eventName';
 import { STORAGE_KEYS } from '@/constants/storageKeys';
 import useMixpanelTrack from '@/hooks/Mixpanel/useMixpanelTrack';
 import useTrackPageView from '@/hooks/Mixpanel/useTrackPageView';
 import useAuth from '@/hooks/useAuth';
+import { useAdminClubStore } from '@/store/useAdminClubStore';
 import * as Styled from './LoginTab.styles';
 
 const LoginTab = () => {
@@ -42,6 +44,9 @@ const LoginTab = () => {
         STORAGE_KEYS.HAS_CONSENTED_PERSONAL_INFO,
         JSON.stringify(loginData.allowedPersonalInformation),
       );
+      if (loginData.clubId) {
+        useAdminClubStore.getState().setClubId(loginData.clubId);
+      }
       alert('로그인 성공! 관리자 페이지로 이동합니다.');
       navigate('/admin');
     } catch (error: unknown) {
@@ -58,7 +63,7 @@ const LoginTab = () => {
     trackEvent(ADMIN_EVENT.LOGIN_BUTTON_CLICKED);
   };
 
-  if (authLoading) return <div>로딩 중...</div>;
+  if (authLoading) return <Spinner />;
 
   return (
     <>

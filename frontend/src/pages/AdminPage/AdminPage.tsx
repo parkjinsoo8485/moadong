@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '@/components/common/Header/Header';
+import Spinner from '@/components/common/Spinner/Spinner';
 import { STORAGE_KEYS } from '@/constants/storageKeys';
 import { useGetClubDetail } from '@/hooks/Queries/useClub';
 import PersonalInfoConsentModal from '@/pages/AdminPage/components/PersonalInfoConsentModal/PersonalInfoConsentModal';
@@ -14,13 +15,15 @@ const AdminPage = () => {
     () =>
       localStorage.getItem(STORAGE_KEYS.HAS_CONSENTED_PERSONAL_INFO) === 'true',
   );
-  const { data: clubDetail, error } = useGetClubDetail(clubId || '');
+  const { data: clubDetail, error, isLoading } = useGetClubDetail(clubId || '');
 
-  if (!clubDetail) {
-    return null;
+  if (isLoading || (!clubDetail && !error)) {
+    return <Spinner />;
   }
 
-  if (error) return <p>Error: {error.message}</p>;
+  if (error || !clubDetail) {
+    return <p>Error: {error?.message || '동아리 정보를 불러올 수 없습니다.'}</p>;
+  }
 
   return (
     <>
