@@ -40,7 +40,6 @@ out/
 summary*.html
 
 
-application.properties
 application.yml
 application.yaml
 moadong.json
