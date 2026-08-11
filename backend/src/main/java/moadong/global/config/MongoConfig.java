@@ -6,6 +6,7 @@ import net.javacrumbs.shedlock.provider.mongo.MongoLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 
@@ -14,13 +15,13 @@ import org.springframework.data.mongodb.MongoTransactionManager;
 public class MongoConfig {
     @Bean
     @org.springframework.context.annotation.Profile("prod")
-    public MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+    public MongoTransactionManager transactionManager(@Lazy MongoDatabaseFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
 
 
     @Bean
-    public LockProvider lockProvider(MongoClient mongoClient) {
+    public LockProvider lockProvider(@Lazy MongoClient mongoClient) {
         return new MongoLockProvider(mongoClient.getDatabase("shedLock"));
     }
 
