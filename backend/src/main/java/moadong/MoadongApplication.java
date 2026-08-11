@@ -9,7 +9,10 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(
+        exclude = {DataSourceAutoConfiguration.class},
+        excludeName = {"de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration"}
+)
 @RequiredArgsConstructor
 @EnableScheduling
 @EnableRetry
