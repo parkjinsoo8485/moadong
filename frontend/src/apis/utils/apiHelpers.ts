@@ -1,5 +1,22 @@
 import { ApiError } from '@/errors';
 
+/**
+ * localtunnel bypass 헤더를 자동으로 포함하는 fetch 래퍼.
+ * 공개(인증 불필요) API 요청에 사용한다.
+ */
+export const apiFetch = (
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<Response> => {
+  return fetch(input, {
+    ...init,
+    headers: {
+      'bypass-tunnel-reminder': 'true',
+      ...(init?.headers || {}),
+    },
+  });
+};
+
 export const handleResponse = async <T = unknown>(
   response: Response,
   customErrorMessage?: string,

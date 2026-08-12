@@ -1,5 +1,5 @@
 import API_BASE_URL from '@/constants/api';
-import { handleResponse } from './utils/apiHelpers';
+import { apiFetch, handleResponse } from './utils/apiHelpers';
 
 export type BannerType = 'WEB' | 'APP_HOME' | 'WEB_MOBILE';
 
@@ -16,7 +16,7 @@ export const bannerApi = {
     const url = new URL(`${API_BASE_URL}/api/banner`);
     url.searchParams.set('type', type);
 
-    const response = await fetch(url);
+    const response = await apiFetch(url);
     const data = await handleResponse<{
       statuscode: string;
       message: string;
