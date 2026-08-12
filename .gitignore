@@ -9,3 +9,6 @@ dailyNote/
 
 /.omc
 .gstack/
+
+# Netlify CLI cache
+.netlify/
