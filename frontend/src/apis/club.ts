@@ -4,7 +4,9 @@ import { secureFetch } from './auth/secureFetch';
 import { handleResponse } from './utils/apiHelpers';
 
 export const getClubDetail = async (clubId: string): Promise<ClubDetail> => {
-  const response = await fetch(`${API_BASE_URL}/api/club/${clubId}`);
+  const response = await fetch(`${API_BASE_URL}/api/club/${clubId}`, {
+    headers: { 'bypass-tunnel-reminder': 'true' },
+  });
   const data = await handleResponse<{ club: ClubDetail }>(
     response,
     '클럽 정보를 불러오는데 실패했습니다.',
@@ -30,7 +32,9 @@ export const getClubList = async (
   });
 
   url.search = params.toString();
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: { 'bypass-tunnel-reminder': 'true' },
+  });
   const data = await handleResponse<{
     clubs: ClubDetail[];
     totalCount: number;
@@ -51,6 +55,9 @@ export const getClubCalendarEvents = async (
 ): Promise<ClubCalendarEvent[]> => {
   const response = await fetch(
     `${API_BASE_URL}/api/club/${clubId}/calendar-events`,
+    {
+      headers: { 'bypass-tunnel-reminder': 'true' },
+    },
   );
   const data = await handleResponse<{
     calendarEvents?: ClubCalendarEvent[];

@@ -12,6 +12,7 @@ export const secureFetch = async (
     headers: {
       ...(init?.headers || {}),
       Authorization: `Bearer ${accessToken}`,
+      'bypass-tunnel-reminder': 'true',
     },
     credentials: 'include',
   });
